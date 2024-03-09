@@ -36,35 +36,42 @@ s only contains lowercase English letters.
 
 Solution :-
 
-class Solution {
-    public boolean validPalindrome(String s) {
-        int left = 0;
-        int right = s.length() - 1;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
-        while (left < right) {
-            if (s.charAt(left) != s.charAt(right)) {
-                // Check both possibilities: exclude left character or exclude right character
-                return isPalindrome(s, left + 1, right) || isPalindrome(s, left, right - 1);
+class Solution {
+    public String removeDuplicates(String s, int k) {
+        Deque<Pair> stack = new ArrayDeque<>();
+
+        for (char c : s.toCharArray()) {
+            if (!stack.isEmpty() && stack.peek().character == c) {
+                stack.peek().count++;
+            } else {
+                stack.push(new Pair(c, 1));
             }
 
-            // Move towards the center
-            left++;
-            right--;
+            if (stack.peek().count == k) {
+                stack.pop();
+            }
         }
 
-        // If the loop completes without returning, the string is a valid palindrome
-        return true;
+        StringBuilder res = new StringBuilder();
+        for (Pair pair : stack) {
+            for (int i = 0; i < pair.count; i++) {
+                res.insert(0, pair.character);
+            }
+        }
+
+        return res.toString();
     }
 
-    private boolean isPalindrome(String s, int start, int end) {
-        while (start < end) {
-            if (s.charAt(start) != s.charAt(end)) {
-                return false;
-            }
-            start++;
-            end--;
+    private static class Pair {
+        char character;
+        int count;
+
+        Pair(char character, int count) {
+            this.character = character;
+            this.count = count;
         }
-        return true;
     }
 }
-
